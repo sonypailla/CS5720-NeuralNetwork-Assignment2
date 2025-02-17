@@ -32,11 +32,16 @@ print(f"Categorical Cross-Entropy (CCE): {cce_value.numpy()}")
 y_pred_modified = np.array([[0.3, 0.7], [0.6, 0.4], [0.7, 0.3], [0.5, 0.5]])  # Modified predictions
 y_pred_modified_tensor = tf.constant(y_pred_modified, dtype=tf.float32)
 
-# Compute new losses for modified predictions
-mse_loss_modified = tf.reduce_mean(tf.square(y_true_tensor - y_pred_modified_tensor))
-cce_value_modified = cce_loss(y_true_cce, y_pred_modified_tensor)
+# Convert y_true to match the shape of y_pred (4, 2) for MSE calculation
+y_true_modified = np.array([[0, 1], [0, 1], [1, 0], [0, 1]])  # One-hot encoded for MSE
+y_true_modified_tensor = tf.constant(y_true_modified, dtype=tf.float32)
 
+# Compute new MSE loss for modified predictions
+mse_loss_modified = tf.reduce_mean(tf.square(y_true_modified_tensor - y_pred_modified_tensor))
 print(f"Modified MSE Loss: {mse_loss_modified.numpy()}")
+
+# Compute new CCE loss for modified predictions
+cce_value_modified = cce_loss(y_true_cce, y_pred_modified_tensor)
 print(f"Modified CCE Loss: {cce_value_modified.numpy()}")
 
 # Step 4: Plot loss function values using Matplotlib
@@ -50,3 +55,4 @@ plt.ylabel('Loss Value')
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
 plt.show()
+
